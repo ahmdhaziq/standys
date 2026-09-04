@@ -1,28 +1,11 @@
-import {
-  IsDateString,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class NewDailyTaskDto {
+  @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  taskId!: number;
-
-  @IsNumber()
-  userId!: number;
-
-  @IsDateString()
-  taskDate!: string;
-
-  @IsString()
-  status!: string;
-
-  @IsDateString()
-  @IsOptional()
-  completedAt?: string;
+  taskId!: number | null;
 
   @IsString()
   @MinLength(10)

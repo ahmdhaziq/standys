@@ -393,9 +393,9 @@ export type tasksSumOrderByAggregateInput = {
   user_id?: Prisma.SortOrder
 }
 
-export type TasksScalarRelationFilter = {
-  is?: Prisma.tasksWhereInput
-  isNot?: Prisma.tasksWhereInput
+export type TasksNullableScalarRelationFilter = {
+  is?: Prisma.tasksWhereInput | null
+  isNot?: Prisma.tasksWhereInput | null
 }
 
 export type tasksCreateNestedManyWithoutUserInput = {
@@ -450,10 +450,12 @@ export type tasksCreateNestedOneWithoutDaily_tasksInput = {
   connect?: Prisma.tasksWhereUniqueInput
 }
 
-export type tasksUpdateOneRequiredWithoutDaily_tasksNestedInput = {
+export type tasksUpdateOneWithoutDaily_tasksNestedInput = {
   create?: Prisma.XOR<Prisma.tasksCreateWithoutDaily_tasksInput, Prisma.tasksUncheckedCreateWithoutDaily_tasksInput>
   connectOrCreate?: Prisma.tasksCreateOrConnectWithoutDaily_tasksInput
   upsert?: Prisma.tasksUpsertWithoutDaily_tasksInput
+  disconnect?: Prisma.tasksWhereInput | boolean
+  delete?: Prisma.tasksWhereInput | boolean
   connect?: Prisma.tasksWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.tasksUpdateToOneWithWhereWithoutDaily_tasksInput, Prisma.tasksUpdateWithoutDaily_tasksInput>, Prisma.tasksUncheckedUpdateWithoutDaily_tasksInput>
 }

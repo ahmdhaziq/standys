@@ -3,6 +3,7 @@ import { NewDailyTaskDto } from './dto/new-daily-task.dto';
 import { TasksService } from '../tasks/tasks.service';
 import { DailyTasksRepository } from './daily-tasks.repository';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
+import { ValidateUser } from '../auth/types/validate';
 
 @Injectable()
 export class DailyTasksService {
@@ -12,16 +13,30 @@ export class DailyTasksService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async createDailyTask(dto: NewDailyTaskDto) {
-    const exist = await this.tasksService.getTaskById(dto.taskId);
-    if (!dto.taskId || !exist) {
-      return this.prisma.$transaction(async (tx) => {
+  async createDailyTask(dto: NewDailyTaskDto, user: ValidateUser) {
+    let dailyTask;
+
+    if (dto.taskId) {
+      const exist = await this.tasksService.getTaskById(dto.taskId);
+      if (exist) {
+        dailyTask = await this.dailyTasksRepository.createDailyTask(
+          {
+            taskId: exist.id,
+            taskDate: new Date().toISOString(),
+            status: 'PENDING',
+          },
+          this.prisma,
+          user.id,
+        );
+      }
+    } else {
+      await this.prisma.$transaction(async (tx) => {
         // Create Parent Task
         const task = await this.tasksService.createTask(
           {
             title: dto.title,
             description: dto.description,
-            userId: dto.userId,
+            userId: user.id,
           },
           tx,
         );
@@ -29,42 +44,36 @@ export class DailyTasksService {
           throw new Error('Failed to create task');
         }
 
-        await this.dailyTasksRepository.createDailyTask(
+        dailyTask = await this.dailyTasksRepository.createDailyTask(
           {
-            taskId: task.id,
-            userId: dto.userId,
-            taskDate: dto.taskDate,
-            status: dto.status,
+            taskId: task.id ? task.id : null,
+            taskDate: new Date().toISOString(),
+            status: 'PENDING',
           },
           tx,
+          user.id,
         );
       });
     }
+    if (!dailyTask) {
+      throw new Error('Failed to create daily task');
+    }
 
-    await this.dailyTasksRepository.createDailyTask(
-      {
-        taskId: dto.taskId,
-        userId: dto.userId,
-        taskDate: dto.taskDate,
-        status: dto.status,
-      },
-      this.prisma,
-    );
+    console.log('dailyTask', dailyTask);
 
     return {
       status: 'success',
       data: {
-        taskId: dto.taskId,
-        userId: dto.userId,
-        taskDate: dto.taskDate,
-        status: dto.status,
+        taskId: dailyTask.task_id,
+        taskDate: dailyTask.task_date,
+        status: dailyTask.status,
         completedAt: null,
       },
       meta: null,
     };
   }
 
-  async getDailyTasks(userId: number, taskDate: Date) {
+  async getDailyTasks(userId: number, taskDate: string) {
     const dailyTasks = await this.dailyTasksRepository.getDailyTasks(
       userId,
       taskDate,

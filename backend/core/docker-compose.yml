@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: standys
+      POSTGRES_DB: standys_db
     ports:
       - '5432:5432'
     volumes:

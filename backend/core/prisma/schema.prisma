@@ -39,8 +39,8 @@ model daily_tasks {
   id           Int       @id @default(autoincrement())
   user_id      Int
   user         user      @relation(fields: [user_id], references: [id])
-  task_id      Int
-  task         tasks     @relation(fields: [task_id], references: [id])
+  task_id      Int?
+  task         tasks?    @relation(fields: [task_id], references: [id])
   task_date    DateTime
   status       String
   completed_at DateTime?

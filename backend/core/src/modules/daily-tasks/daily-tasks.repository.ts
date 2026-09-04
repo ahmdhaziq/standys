@@ -10,11 +10,24 @@ export class DailyTasksRepository {
   async createDailyTask(
     dto: CreateDailyTaskDto,
     db: PrismaClient | Prisma.TransactionClient,
+    userId: number,
   ) {
-    await db.daily_tasks.create({
+    return await db.daily_tasks.create({
       data: {
-        task_id: dto.taskId,
-        user_id: dto.userId,
+        ...(dto.taskId !== undefined && dto.taskId !== null
+          ? {
+              task: {
+                connect: {
+                  id: dto.taskId,
+                },
+              },
+            }
+          : {}),
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
         task_date: dto.taskDate,
         status: dto.status,
         completed_at: dto.completedAt,
@@ -22,11 +35,22 @@ export class DailyTasksRepository {
     });
   }
 
-  async getDailyTasks(userId: number, taskDate: Date) {
+  async getDailyTasks(userId: number, taskDate: string) {
+    const start = new Date(`${taskDate}T00:00:00.000Z`);
+    const end = new Date(`${taskDate}T00:00:00.000Z`);
+    end.setUTCDate(end.getUTCDate() + 1);
     return await this.prisma.daily_tasks.findMany({
       where: {
-        user_id: userId,
-        task_date: taskDate,
+        user: {
+          id: userId,
+        },
+        task_date: {
+          gte: start,
+          lte: end,
+        },
+      },
+      include: {
+        task: true,
       },
     });
   }

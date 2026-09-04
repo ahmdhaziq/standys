@@ -16,7 +16,11 @@ export class TasksRepository {
       data: {
         title: createTaskDto.title,
         description: createTaskDto.description,
-        user_id: createTaskDto.userId,
+        user: {
+          connect: {
+            id: createTaskDto.userId,
+          },
+        },
         updated_at: new Date(),
       },
     });

@@ -8,5 +8,6 @@ import { TasksRepository } from './tasks.repository';
   providers: [TasksService, TasksRepository],
   controllers: [TasksController],
   imports: [PrismaModule],
+  exports: [TasksService, TasksRepository],
 })
 export class TasksModule {}

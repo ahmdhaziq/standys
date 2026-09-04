@@ -1,11 +1,11 @@
+import { Type } from 'class-transformer';
 import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateDailyTaskDto {
+  @Type(() => Number)
   @IsNumber()
-  taskId!: number;
-
-  @IsNumber()
-  userId!: number;
+  @IsOptional()
+  taskId!: number | null;
 
   @IsDateString()
   taskDate!: string;

@@ -208,7 +208,7 @@ export type daily_tasksGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type Daily_tasksGroupByOutputType = {
   id: number
   user_id: number
-  task_id: number
+  task_id: number | null
   task_date: Date
   status: string
   completed_at: Date | null
@@ -242,20 +242,20 @@ export type daily_tasksWhereInput = {
   NOT?: Prisma.daily_tasksWhereInput | Prisma.daily_tasksWhereInput[]
   id?: Prisma.IntFilter<"daily_tasks"> | number
   user_id?: Prisma.IntFilter<"daily_tasks"> | number
-  task_id?: Prisma.IntFilter<"daily_tasks"> | number
+  task_id?: Prisma.IntNullableFilter<"daily_tasks"> | number | null
   task_date?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   status?: Prisma.StringFilter<"daily_tasks"> | string
   completed_at?: Prisma.DateTimeNullableFilter<"daily_tasks"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
-  task?: Prisma.XOR<Prisma.TasksScalarRelationFilter, Prisma.tasksWhereInput>
+  task?: Prisma.XOR<Prisma.TasksNullableScalarRelationFilter, Prisma.tasksWhereInput> | null
 }
 
 export type daily_tasksOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
-  task_id?: Prisma.SortOrder
+  task_id?: Prisma.SortOrderInput | Prisma.SortOrder
   task_date?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completed_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -272,20 +272,20 @@ export type daily_tasksWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.daily_tasksWhereInput[]
   NOT?: Prisma.daily_tasksWhereInput | Prisma.daily_tasksWhereInput[]
   user_id?: Prisma.IntFilter<"daily_tasks"> | number
-  task_id?: Prisma.IntFilter<"daily_tasks"> | number
+  task_id?: Prisma.IntNullableFilter<"daily_tasks"> | number | null
   task_date?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   status?: Prisma.StringFilter<"daily_tasks"> | string
   completed_at?: Prisma.DateTimeNullableFilter<"daily_tasks"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
-  task?: Prisma.XOR<Prisma.TasksScalarRelationFilter, Prisma.tasksWhereInput>
+  task?: Prisma.XOR<Prisma.TasksNullableScalarRelationFilter, Prisma.tasksWhereInput> | null
 }, "id" | "task_date_task_id">
 
 export type daily_tasksOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
-  task_id?: Prisma.SortOrder
+  task_id?: Prisma.SortOrderInput | Prisma.SortOrder
   task_date?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completed_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -304,7 +304,7 @@ export type daily_tasksScalarWhereWithAggregatesInput = {
   NOT?: Prisma.daily_tasksScalarWhereWithAggregatesInput | Prisma.daily_tasksScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"daily_tasks"> | number
   user_id?: Prisma.IntWithAggregatesFilter<"daily_tasks"> | number
-  task_id?: Prisma.IntWithAggregatesFilter<"daily_tasks"> | number
+  task_id?: Prisma.IntNullableWithAggregatesFilter<"daily_tasks"> | number | null
   task_date?: Prisma.DateTimeWithAggregatesFilter<"daily_tasks"> | Date | string
   status?: Prisma.StringWithAggregatesFilter<"daily_tasks"> | string
   completed_at?: Prisma.DateTimeNullableWithAggregatesFilter<"daily_tasks"> | Date | string | null
@@ -319,13 +319,13 @@ export type daily_tasksCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   user: Prisma.userCreateNestedOneWithoutDaily_tasksInput
-  task: Prisma.tasksCreateNestedOneWithoutDaily_tasksInput
+  task?: Prisma.tasksCreateNestedOneWithoutDaily_tasksInput
 }
 
 export type daily_tasksUncheckedCreateInput = {
   id?: number
   user_id: number
-  task_id: number
+  task_id?: number | null
   task_date: Date | string
   status: string
   completed_at?: Date | string | null
@@ -340,13 +340,13 @@ export type daily_tasksUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.userUpdateOneRequiredWithoutDaily_tasksNestedInput
-  task?: Prisma.tasksUpdateOneRequiredWithoutDaily_tasksNestedInput
+  task?: Prisma.tasksUpdateOneWithoutDaily_tasksNestedInput
 }
 
 export type daily_tasksUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
-  task_id?: Prisma.IntFieldUpdateOperationsInput | number
+  task_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   task_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -357,7 +357,7 @@ export type daily_tasksUncheckedUpdateInput = {
 export type daily_tasksCreateManyInput = {
   id?: number
   user_id: number
-  task_id: number
+  task_id?: number | null
   task_date: Date | string
   status: string
   completed_at?: Date | string | null
@@ -376,7 +376,7 @@ export type daily_tasksUpdateManyMutationInput = {
 export type daily_tasksUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
-  task_id?: Prisma.IntFieldUpdateOperationsInput | number
+  task_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   task_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -532,18 +532,26 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type daily_tasksCreateWithoutUserInput = {
   task_date: Date | string
   status: string
   completed_at?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
-  task: Prisma.tasksCreateNestedOneWithoutDaily_tasksInput
+  task?: Prisma.tasksCreateNestedOneWithoutDaily_tasksInput
 }
 
 export type daily_tasksUncheckedCreateWithoutUserInput = {
   id?: number
-  task_id: number
+  task_id?: number | null
   task_date: Date | string
   status: string
   completed_at?: Date | string | null
@@ -583,7 +591,7 @@ export type daily_tasksScalarWhereInput = {
   NOT?: Prisma.daily_tasksScalarWhereInput | Prisma.daily_tasksScalarWhereInput[]
   id?: Prisma.IntFilter<"daily_tasks"> | number
   user_id?: Prisma.IntFilter<"daily_tasks"> | number
-  task_id?: Prisma.IntFilter<"daily_tasks"> | number
+  task_id?: Prisma.IntNullableFilter<"daily_tasks"> | number | null
   task_date?: Prisma.DateTimeFilter<"daily_tasks"> | Date | string
   status?: Prisma.StringFilter<"daily_tasks"> | string
   completed_at?: Prisma.DateTimeNullableFilter<"daily_tasks"> | Date | string | null
@@ -638,7 +646,7 @@ export type daily_tasksUpdateManyWithWhereWithoutTaskInput = {
 
 export type daily_tasksCreateManyUserInput = {
   id?: number
-  task_id: number
+  task_id?: number | null
   task_date: Date | string
   status: string
   completed_at?: Date | string | null
@@ -652,12 +660,12 @@ export type daily_tasksUpdateWithoutUserInput = {
   completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  task?: Prisma.tasksUpdateOneRequiredWithoutDaily_tasksNestedInput
+  task?: Prisma.tasksUpdateOneWithoutDaily_tasksNestedInput
 }
 
 export type daily_tasksUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  task_id?: Prisma.IntFieldUpdateOperationsInput | number
+  task_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   task_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -667,7 +675,7 @@ export type daily_tasksUncheckedUpdateWithoutUserInput = {
 
 export type daily_tasksUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  task_id?: Prisma.IntFieldUpdateOperationsInput | number
+  task_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   task_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -726,7 +734,7 @@ export type daily_tasksSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.userDefaultArgs<ExtArgs>
-  task?: boolean | Prisma.tasksDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.daily_tasks$taskArgs<ExtArgs>
 }, ExtArgs["result"]["daily_tasks"]>
 
 export type daily_tasksSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -739,7 +747,7 @@ export type daily_tasksSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.userDefaultArgs<ExtArgs>
-  task?: boolean | Prisma.tasksDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.daily_tasks$taskArgs<ExtArgs>
 }, ExtArgs["result"]["daily_tasks"]>
 
 export type daily_tasksSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -752,7 +760,7 @@ export type daily_tasksSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.userDefaultArgs<ExtArgs>
-  task?: boolean | Prisma.tasksDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.daily_tasks$taskArgs<ExtArgs>
 }, ExtArgs["result"]["daily_tasks"]>
 
 export type daily_tasksSelectScalar = {
@@ -769,27 +777,27 @@ export type daily_tasksSelectScalar = {
 export type daily_tasksOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "task_id" | "task_date" | "status" | "completed_at" | "created_at" | "updated_at", ExtArgs["result"]["daily_tasks"]>
 export type daily_tasksInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.userDefaultArgs<ExtArgs>
-  task?: boolean | Prisma.tasksDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.daily_tasks$taskArgs<ExtArgs>
 }
 export type daily_tasksIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.userDefaultArgs<ExtArgs>
-  task?: boolean | Prisma.tasksDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.daily_tasks$taskArgs<ExtArgs>
 }
 export type daily_tasksIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.userDefaultArgs<ExtArgs>
-  task?: boolean | Prisma.tasksDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.daily_tasks$taskArgs<ExtArgs>
 }
 
 export type $daily_tasksPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "daily_tasks"
   objects: {
     user: Prisma.$userPayload<ExtArgs>
-    task: Prisma.$tasksPayload<ExtArgs>
+    task: Prisma.$tasksPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     user_id: number
-    task_id: number
+    task_id: number | null
     task_date: Date
     status: string
     completed_at: Date | null
@@ -1190,7 +1198,7 @@ readonly fields: daily_tasksFieldRefs;
 export interface Prisma__daily_tasksClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.userDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.userDefaultArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  task<T extends Prisma.tasksDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.tasksDefaultArgs<ExtArgs>>): Prisma.Prisma__tasksClient<runtime.Types.Result.GetResult<Prisma.$tasksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  task<T extends Prisma.daily_tasks$taskArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.daily_tasks$taskArgs<ExtArgs>>): Prisma.Prisma__tasksClient<runtime.Types.Result.GetResult<Prisma.$tasksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1626,6 +1634,25 @@ export type daily_tasksDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many daily_tasks to delete.
    */
   limit?: number
+}
+
+/**
+ * daily_tasks.task
+ */
+export type daily_tasks$taskArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the tasks
+   */
+  select?: Prisma.tasksSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the tasks
+   */
+  omit?: Prisma.tasksOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.tasksInclude<ExtArgs> | null
+  where?: Prisma.tasksWhereInput
 }
 
 /**

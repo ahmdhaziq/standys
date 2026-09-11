@@ -3,6 +3,10 @@ import { ApiResponse, NestErrorBody, NestResponse } from "./types";
 
 const BASE_URL = process.env.NEST_URL || "http://localhost:3000";
 
+type requestOptions = RequestInit & {
+  params?: Record<string, string | number | boolean | undefined | null>;
+};
+
 function normalizeHeaders(init?: HeadersInit): Record<string, string> {
   if (!init) return {};
   const out: Record<string, string> = {};
@@ -16,9 +20,9 @@ async function request<T>(
   method: string,
   path: string,
   body?: unknown,
-  options: RequestInit = {},
+  options: requestOptions = {},
 ): Promise<ApiResponse<T>> {
-  const { headers: extraHeaders, ...restOptions } = options;
+  const { headers: extraHeaders, params, ...restOptions } = options;
 
   const isFormData =
     typeof FormData !== "undefined" && body instanceof FormData;
@@ -35,9 +39,23 @@ async function request<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
+  const query = params
+    ? new URLSearchParams(
+        Object.entries(params)
+          .filter(([, value]) => value !== undefined && value !== null)
+          .map(([key, value]) => [key, String(value)]),
+      ).toString()
+    : "";
+
+  const url =
+    `${BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}` +
+    (query ? `?${query}` : "");
+
+  console.log("API URL:", url);
+
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL}/${path}`, {
+    response = await fetch(url, {
       method,
       headers,
       body:
@@ -90,23 +108,23 @@ async function request<T>(
   };
 }
 const api = {
-  get<T>(path: string, options: RequestInit = {}) {
+  get<T>(path: string, options: requestOptions = {}) {
     return request<T>("GET", path, undefined, options);
   },
 
-  post<T>(path: string, body: unknown, options: RequestInit = {}) {
+  post<T>(path: string, body: unknown, options: requestOptions = {}) {
     return request<T>("POST", path, body, options);
   },
 
-  put<T>(path: string, body: unknown, options: RequestInit = {}) {
+  put<T>(path: string, body: unknown, options: requestOptions = {}) {
     return request<T>("PUT", path, body, options);
   },
 
-  patch<T>(path: string, body: unknown, options: RequestInit = {}) {
+  patch<T>(path: string, body: unknown, options: requestOptions = {}) {
     return request<T>("PATCH", path, body, options);
   },
 
-  delete<T = null>(path: string, options: RequestInit = {}) {
+  delete<T = null>(path: string, options: requestOptions = {}) {
     return request<T>("DELETE", path, undefined, options);
   },
 };

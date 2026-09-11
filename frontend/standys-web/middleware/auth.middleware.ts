@@ -1,11 +1,17 @@
+import api from "@/lib/api/server-client";
 import { NextRequest, NextResponse } from "next/server";
 
-export function authMiddleware(req: NextRequest) {
+export async function authMiddleware(req: NextRequest) {
   const cookie = req.cookies.get("access_token");
 
   if (!cookie) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
+  const response = await api.get("/auth/me");
+
+  if (response.status === 401) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
   return;
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import api from "../client";
+import api from "../../../../lib/api/server-client";
 
-export async function login(request: Request) {
+export async function POST(request: Request) {
   const body = await request.json();
   const response = await api.post("/auth/login", {
     email: body.email,
@@ -18,6 +18,8 @@ export async function login(request: Request) {
     { message: "Login successful" },
     { status: response.status },
   );
+
+  console.log("LOGIN RESPONSE:", res);
 
   res.cookies.set("access_token", response.data.access_token, {
     httpOnly: true,

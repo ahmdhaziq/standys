@@ -1,10 +1,47 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup, FieldSet, FieldLabel, Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { LogIn } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { login } from "../api/login";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 export default function LoginCard() {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    try {
+      await login(data.email, data.password);
+
+      toast.add({
+        type: "success",
+        description: "Successfully Logged In.",
+      });
+
+      router.push("/task");
+    } catch (error) {
+      toast.add({
+        type: "error",
+        description:
+          error instanceof Error ? error.message : "Invalid Email or Password.",
+      });
+      reset();
+    }
+  };
   return (
     <Card className="rounded-sm">
       <CardContent>
@@ -33,11 +70,13 @@ export default function LoginCard() {
                     type="email"
                     placeholder="Enter your email"
                     className="rounded-sm h-12"
+                    {...register("email")}
                   />
                 </Field>
                 <Field>
                   <FieldLabel>Password</FieldLabel>
                   <Input
+                    {...register("password")}
                     type="password"
                     placeholder="Enter your password"
                     className="rounded-sm h-12"
@@ -46,12 +85,24 @@ export default function LoginCard() {
               </FieldGroup>
             </FieldSet>
             <Button
+              onClick={handleSubmit(onSubmit)}
               className="w-full mt-4 rounded-sm"
               variant="default"
               size="lg"
             >
               Log in
             </Button>
+            <div className="flex justify-center items-center mt-2">
+              <p className="text-sm">
+                Don&apos;t have an account?{" "}
+                <a
+                  href="/auth/register"
+                  className="text-blue-500 hover:underline"
+                >
+                  Sign up
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </CardContent>

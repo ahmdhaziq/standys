@@ -41,12 +41,11 @@ export class DailyTasksRepository {
     end.setUTCDate(end.getUTCDate() + 1);
     return await this.prisma.daily_tasks.findMany({
       where: {
-        user: {
-          id: userId,
-        },
+        user_id: userId,
+        OR: [{ task_id: null }, { task: { is: { user_id: userId } } }],
         task_date: {
           gte: start,
-          lte: end,
+          lt: end,
         },
       },
       include: {

@@ -5,6 +5,12 @@ import { DailyTasksRepository } from './daily-tasks.repository';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { ValidateUser } from '../auth/types/validate';
 
+interface DailyTaskRecord {
+  task_id: number | null;
+  task_date: Date;
+  status: string;
+}
+
 @Injectable()
 export class DailyTasksService {
   constructor(
@@ -14,7 +20,7 @@ export class DailyTasksService {
   ) {}
 
   async createDailyTask(dto: NewDailyTaskDto, user: ValidateUser) {
-    let dailyTask;
+    let dailyTask: DailyTaskRecord | undefined;
 
     if (dto.taskId) {
       const exist = await this.tasksService.getTaskById(dto.taskId);
@@ -73,9 +79,9 @@ export class DailyTasksService {
     };
   }
 
-  async getDailyTasks(userId: number, taskDate: string) {
+  async getDailyTasks(user: ValidateUser, taskDate: string) {
     const dailyTasks = await this.dailyTasksRepository.getDailyTasks(
-      userId,
+      user.id,
       taskDate,
     );
 

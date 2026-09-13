@@ -1,4 +1,18 @@
+function requiredSecret(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} is not set`);
+  }
+  return value;
+}
+
 export const jwtConstants = {
-  secret:
-    'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
+  get accessSecret(): string {
+    return requiredSecret('JWT_ACCESS_SECRET');
+  },
+  get refreshSecret(): string {
+    return requiredSecret('JWT_REFRESH_SECRET');
+  },
+  accessExpiresIn: '15m' as const,
+  refreshExpiresIn: '7d' as const,
 };

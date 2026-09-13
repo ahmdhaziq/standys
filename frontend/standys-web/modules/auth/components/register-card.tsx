@@ -24,7 +24,6 @@ export default function RegisterCard() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
   } = useForm<RegisterUser>({
     resolver: zodResolver(registerUserSchema),

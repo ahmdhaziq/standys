@@ -6,7 +6,7 @@ export default function Sidebar() {
 
   const [collapsed, setCollapsed] = useState(false);
 
-  let sidebarItems = [
+  const sidebarItems = [
     {
       name: "Today",
       icon: <Home />,

@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   user: 'user',
   tasks: 'tasks',
-  daily_tasks: 'daily_tasks'
+  daily_tasks: 'daily_tasks',
+  refresh_sessions: 'refresh_sessions'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -108,6 +109,20 @@ export const Daily_tasksScalarFieldEnum = {
 } as const
 
 export type Daily_tasksScalarFieldEnum = (typeof Daily_tasksScalarFieldEnum)[keyof typeof Daily_tasksScalarFieldEnum]
+
+
+export const Refresh_sessionsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  jti: 'jti',
+  token_hash: 'token_hash',
+  expires_at: 'expires_at',
+  revoked_at: 'revoked_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Refresh_sessionsScalarFieldEnum = (typeof Refresh_sessionsScalarFieldEnum)[keyof typeof Refresh_sessionsScalarFieldEnum]
 
 
 export const SortOrder = {

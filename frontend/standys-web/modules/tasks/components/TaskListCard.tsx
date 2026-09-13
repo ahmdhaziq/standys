@@ -12,12 +12,19 @@ import { EllipsisVertical, ListClock, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import CreateTask from "./CreateTask";
 import { getTasks } from "../api/get-tasks";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+
+type TaskRow = {
+  id: number;
+  status: string;
+  task: {
+    title: string;
+    description: string | null;
+  };
+};
 
 export default function TaskListCard() {
   const [showInlineCreateTask, setShowInlineCreateTask] = useState(false);
-  const queryClient = useQueryClient();
-
   function getTodayDate() {
     return new Date().toISOString().split("T")[0];
   }
@@ -40,7 +47,7 @@ export default function TaskListCard() {
         </div>
         <div className="mt-2 flex flex-col">
           <ItemGroup className="flex flex-col gap-2">
-            {tasks.data?.data?.map((task) =>
+            {tasks.data?.data?.map((task: TaskRow) =>
               task.status === "completed" ? (
                 <Item
                   key={task.id}

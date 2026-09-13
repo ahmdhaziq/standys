@@ -22,6 +22,7 @@ model user {
   updated_at  DateTime      @updatedAt
   tasks       tasks[]
   daily_tasks daily_tasks[]
+  refresh_sessions refresh_sessions[]
 }
 
 model tasks {
@@ -48,4 +49,18 @@ model daily_tasks {
   updated_at   DateTime  @updatedAt
 
   @@unique([task_date, task_id])
+}
+
+model refresh_sessions {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  user       user      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  jti        String    @unique
+  token_hash String
+  expires_at DateTime
+  revoked_at DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  @@index([user_id, revoked_at, expires_at])
 }

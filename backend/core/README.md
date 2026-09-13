@@ -25,6 +25,21 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Authentication configuration
+
+The API uses a short-lived access token and a separately signed refresh token. Configure both
+secrets through the environment before starting the service:
+
+```bash
+JWT_ACCESS_SECRET=<strong-access-signing-secret>
+JWT_REFRESH_SECRET=<strong-refresh-signing-secret>
+DATABASE_URL=<postgres-connection-string>
+```
+
+Access tokens expire after 15 minutes. Refresh tokens expire after 7 days and are intended to be
+kept only in secure HttpOnly cookies by the frontend boundary. Do not commit these values or log
+token contents.
+
 ## Project setup
 
 ```bash

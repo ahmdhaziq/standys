@@ -10,20 +10,20 @@ import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 
 export default function LoginCard() {
+  type LoginForm = { email: string; password: string };
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<LoginForm>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginForm) => {
     try {
       await login(data.email, data.password);
 

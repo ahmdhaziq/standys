@@ -226,6 +226,7 @@ export type userWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"user"> | Date | string
   tasks?: Prisma.TasksListRelationFilter
   daily_tasks?: Prisma.Daily_tasksListRelationFilter
+  refresh_sessions?: Prisma.Refresh_sessionsListRelationFilter
 }
 
 export type userOrderByWithRelationInput = {
@@ -237,6 +238,7 @@ export type userOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   tasks?: Prisma.tasksOrderByRelationAggregateInput
   daily_tasks?: Prisma.daily_tasksOrderByRelationAggregateInput
+  refresh_sessions?: Prisma.refresh_sessionsOrderByRelationAggregateInput
 }
 
 export type userWhereUniqueInput = Prisma.AtLeast<{
@@ -251,6 +253,7 @@ export type userWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"user"> | Date | string
   tasks?: Prisma.TasksListRelationFilter
   daily_tasks?: Prisma.Daily_tasksListRelationFilter
+  refresh_sessions?: Prisma.Refresh_sessionsListRelationFilter
 }, "id" | "email">
 
 export type userOrderByWithAggregationInput = {
@@ -287,6 +290,7 @@ export type userCreateInput = {
   updated_at?: Date | string
   tasks?: Prisma.tasksCreateNestedManyWithoutUserInput
   daily_tasks?: Prisma.daily_tasksCreateNestedManyWithoutUserInput
+  refresh_sessions?: Prisma.refresh_sessionsCreateNestedManyWithoutUserInput
 }
 
 export type userUncheckedCreateInput = {
@@ -298,6 +302,7 @@ export type userUncheckedCreateInput = {
   updated_at?: Date | string
   tasks?: Prisma.tasksUncheckedCreateNestedManyWithoutUserInput
   daily_tasks?: Prisma.daily_tasksUncheckedCreateNestedManyWithoutUserInput
+  refresh_sessions?: Prisma.refresh_sessionsUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type userUpdateInput = {
@@ -308,6 +313,7 @@ export type userUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.tasksUpdateManyWithoutUserNestedInput
   daily_tasks?: Prisma.daily_tasksUpdateManyWithoutUserNestedInput
+  refresh_sessions?: Prisma.refresh_sessionsUpdateManyWithoutUserNestedInput
 }
 
 export type userUncheckedUpdateInput = {
@@ -319,6 +325,7 @@ export type userUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.tasksUncheckedUpdateManyWithoutUserNestedInput
   daily_tasks?: Prisma.daily_tasksUncheckedUpdateManyWithoutUserNestedInput
+  refresh_sessions?: Prisma.refresh_sessionsUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type userCreateManyInput = {
@@ -431,6 +438,20 @@ export type userUpdateOneRequiredWithoutDaily_tasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutDaily_tasksInput, Prisma.userUpdateWithoutDaily_tasksInput>, Prisma.userUncheckedUpdateWithoutDaily_tasksInput>
 }
 
+export type userCreateNestedOneWithoutRefresh_sessionsInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutRefresh_sessionsInput, Prisma.userUncheckedCreateWithoutRefresh_sessionsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutRefresh_sessionsInput
+  connect?: Prisma.userWhereUniqueInput
+}
+
+export type userUpdateOneRequiredWithoutRefresh_sessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.userCreateWithoutRefresh_sessionsInput, Prisma.userUncheckedCreateWithoutRefresh_sessionsInput>
+  connectOrCreate?: Prisma.userCreateOrConnectWithoutRefresh_sessionsInput
+  upsert?: Prisma.userUpsertWithoutRefresh_sessionsInput
+  connect?: Prisma.userWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.userUpdateToOneWithWhereWithoutRefresh_sessionsInput, Prisma.userUpdateWithoutRefresh_sessionsInput>, Prisma.userUncheckedUpdateWithoutRefresh_sessionsInput>
+}
+
 export type userCreateWithoutTasksInput = {
   email: string
   name: string
@@ -438,6 +459,7 @@ export type userCreateWithoutTasksInput = {
   created_at?: Date | string
   updated_at?: Date | string
   daily_tasks?: Prisma.daily_tasksCreateNestedManyWithoutUserInput
+  refresh_sessions?: Prisma.refresh_sessionsCreateNestedManyWithoutUserInput
 }
 
 export type userUncheckedCreateWithoutTasksInput = {
@@ -448,6 +470,7 @@ export type userUncheckedCreateWithoutTasksInput = {
   created_at?: Date | string
   updated_at?: Date | string
   daily_tasks?: Prisma.daily_tasksUncheckedCreateNestedManyWithoutUserInput
+  refresh_sessions?: Prisma.refresh_sessionsUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type userCreateOrConnectWithoutTasksInput = {
@@ -473,6 +496,7 @@ export type userUpdateWithoutTasksInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   daily_tasks?: Prisma.daily_tasksUpdateManyWithoutUserNestedInput
+  refresh_sessions?: Prisma.refresh_sessionsUpdateManyWithoutUserNestedInput
 }
 
 export type userUncheckedUpdateWithoutTasksInput = {
@@ -483,6 +507,7 @@ export type userUncheckedUpdateWithoutTasksInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   daily_tasks?: Prisma.daily_tasksUncheckedUpdateManyWithoutUserNestedInput
+  refresh_sessions?: Prisma.refresh_sessionsUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type userCreateWithoutDaily_tasksInput = {
@@ -492,6 +517,7 @@ export type userCreateWithoutDaily_tasksInput = {
   created_at?: Date | string
   updated_at?: Date | string
   tasks?: Prisma.tasksCreateNestedManyWithoutUserInput
+  refresh_sessions?: Prisma.refresh_sessionsCreateNestedManyWithoutUserInput
 }
 
 export type userUncheckedCreateWithoutDaily_tasksInput = {
@@ -502,6 +528,7 @@ export type userUncheckedCreateWithoutDaily_tasksInput = {
   created_at?: Date | string
   updated_at?: Date | string
   tasks?: Prisma.tasksUncheckedCreateNestedManyWithoutUserInput
+  refresh_sessions?: Prisma.refresh_sessionsUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type userCreateOrConnectWithoutDaily_tasksInput = {
@@ -527,6 +554,7 @@ export type userUpdateWithoutDaily_tasksInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.tasksUpdateManyWithoutUserNestedInput
+  refresh_sessions?: Prisma.refresh_sessionsUpdateManyWithoutUserNestedInput
 }
 
 export type userUncheckedUpdateWithoutDaily_tasksInput = {
@@ -537,6 +565,65 @@ export type userUncheckedUpdateWithoutDaily_tasksInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.tasksUncheckedUpdateManyWithoutUserNestedInput
+  refresh_sessions?: Prisma.refresh_sessionsUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type userCreateWithoutRefresh_sessionsInput = {
+  email: string
+  name: string
+  password: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  tasks?: Prisma.tasksCreateNestedManyWithoutUserInput
+  daily_tasks?: Prisma.daily_tasksCreateNestedManyWithoutUserInput
+}
+
+export type userUncheckedCreateWithoutRefresh_sessionsInput = {
+  id?: number
+  email: string
+  name: string
+  password: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  tasks?: Prisma.tasksUncheckedCreateNestedManyWithoutUserInput
+  daily_tasks?: Prisma.daily_tasksUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type userCreateOrConnectWithoutRefresh_sessionsInput = {
+  where: Prisma.userWhereUniqueInput
+  create: Prisma.XOR<Prisma.userCreateWithoutRefresh_sessionsInput, Prisma.userUncheckedCreateWithoutRefresh_sessionsInput>
+}
+
+export type userUpsertWithoutRefresh_sessionsInput = {
+  update: Prisma.XOR<Prisma.userUpdateWithoutRefresh_sessionsInput, Prisma.userUncheckedUpdateWithoutRefresh_sessionsInput>
+  create: Prisma.XOR<Prisma.userCreateWithoutRefresh_sessionsInput, Prisma.userUncheckedCreateWithoutRefresh_sessionsInput>
+  where?: Prisma.userWhereInput
+}
+
+export type userUpdateToOneWithWhereWithoutRefresh_sessionsInput = {
+  where?: Prisma.userWhereInput
+  data: Prisma.XOR<Prisma.userUpdateWithoutRefresh_sessionsInput, Prisma.userUncheckedUpdateWithoutRefresh_sessionsInput>
+}
+
+export type userUpdateWithoutRefresh_sessionsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.tasksUpdateManyWithoutUserNestedInput
+  daily_tasks?: Prisma.daily_tasksUpdateManyWithoutUserNestedInput
+}
+
+export type userUncheckedUpdateWithoutRefresh_sessionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.tasksUncheckedUpdateManyWithoutUserNestedInput
+  daily_tasks?: Prisma.daily_tasksUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -547,11 +634,13 @@ export type userUncheckedUpdateWithoutDaily_tasksInput = {
 export type UserCountOutputType = {
   tasks: number
   daily_tasks: number
+  refresh_sessions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | UserCountOutputTypeCountTasksArgs
   daily_tasks?: boolean | UserCountOutputTypeCountDaily_tasksArgs
+  refresh_sessions?: boolean | UserCountOutputTypeCountRefresh_sessionsArgs
 }
 
 /**
@@ -578,6 +667,13 @@ export type UserCountOutputTypeCountDaily_tasksArgs<ExtArgs extends runtime.Type
   where?: Prisma.daily_tasksWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRefresh_sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.refresh_sessionsWhereInput
+}
+
 
 export type userSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -588,6 +684,7 @@ export type userSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updated_at?: boolean
   tasks?: boolean | Prisma.user$tasksArgs<ExtArgs>
   daily_tasks?: boolean | Prisma.user$daily_tasksArgs<ExtArgs>
+  refresh_sessions?: boolean | Prisma.user$refresh_sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -622,6 +719,7 @@ export type userOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type userInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | Prisma.user$tasksArgs<ExtArgs>
   daily_tasks?: boolean | Prisma.user$daily_tasksArgs<ExtArgs>
+  refresh_sessions?: boolean | Prisma.user$refresh_sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type userIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -632,6 +730,7 @@ export type $userPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     tasks: Prisma.$tasksPayload<ExtArgs>[]
     daily_tasks: Prisma.$daily_tasksPayload<ExtArgs>[]
+    refresh_sessions: Prisma.$refresh_sessionsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1036,6 +1135,7 @@ export interface Prisma__userClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tasks<T extends Prisma.user$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$tasksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   daily_tasks<T extends Prisma.user$daily_tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$daily_tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$daily_tasksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  refresh_sessions<T extends Prisma.user$refresh_sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.user$refresh_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$refresh_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1509,6 +1609,30 @@ export type user$daily_tasksArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.Daily_tasksScalarFieldEnum | Prisma.Daily_tasksScalarFieldEnum[]
+}
+
+/**
+ * user.refresh_sessions
+ */
+export type user$refresh_sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the refresh_sessions
+   */
+  select?: Prisma.refresh_sessionsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the refresh_sessions
+   */
+  omit?: Prisma.refresh_sessionsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.refresh_sessionsInclude<ExtArgs> | null
+  where?: Prisma.refresh_sessionsWhereInput
+  orderBy?: Prisma.refresh_sessionsOrderByWithRelationInput | Prisma.refresh_sessionsOrderByWithRelationInput[]
+  cursor?: Prisma.refresh_sessionsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Refresh_sessionsScalarFieldEnum | Prisma.Refresh_sessionsScalarFieldEnum[]
 }
 
 /**

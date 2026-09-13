@@ -5,7 +5,55 @@ const BASE_URL = process.env.NEST_URL || "http://localhost:3000";
 
 type requestOptions = RequestInit & {
   params?: Record<string, string | number | boolean | undefined | null>;
+  skipRefresh?: boolean;
 };
+
+const ACCESS_TOKEN_MAX_AGE = 60 * 15;
+
+async function refreshAccessToken(): Promise<boolean> {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refresh_token")?.value;
+
+  if (!refreshToken) {
+    return false;
+  }
+
+  try {
+    const response = await fetch(
+      `${BASE_URL.replace(/\/$/, "")}/auth/refresh`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+        cache: "no-store",
+      },
+    );
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const json = (await response.json()) as NestResponse<{
+      access_token: string;
+    }>;
+    const accessToken = json.data?.access_token;
+
+    if (!accessToken) {
+      return false;
+    }
+
+    cookieStore.set("access_token", accessToken, {
+      httpOnly: true,
+      maxAge: ACCESS_TOKEN_MAX_AGE,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function normalizeHeaders(init?: HeadersInit): Record<string, string> {
   if (!init) return {};
@@ -22,7 +70,12 @@ async function request<T>(
   body?: unknown,
   options: requestOptions = {},
 ): Promise<ApiResponse<T>> {
-  const { headers: extraHeaders, params, ...restOptions } = options;
+  const {
+    headers: extraHeaders,
+    params,
+    skipRefresh = false,
+    ...restOptions
+  } = options;
 
   const isFormData =
     typeof FormData !== "undefined" && body instanceof FormData;
@@ -51,8 +104,6 @@ async function request<T>(
     `${BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}` +
     (query ? `?${query}` : "");
 
-  console.log("API URL:", url);
-
   let response: Response;
   try {
     response = await fetch(url, {
@@ -68,6 +119,21 @@ async function request<T>(
     });
   } catch (error) {
     throw new Error(`API request failed: ${error}`);
+  }
+
+  if (
+    response.status === 401 &&
+    !skipRefresh &&
+    path !== "/auth/refresh" &&
+    path !== "/auth/login"
+  ) {
+    const refreshed = await refreshAccessToken();
+    if (refreshed) {
+      return request<T>(method, path, body, {
+        ...options,
+        skipRefresh: true,
+      });
+    }
   }
 
   if (response.status === 204) {

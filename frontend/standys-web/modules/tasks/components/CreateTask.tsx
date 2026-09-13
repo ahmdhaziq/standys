@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
-  FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -24,7 +22,6 @@ export default function CreateTask({ onClose }: CreateTaskProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm<CreateTaskInput>({
     defaultValues: {
       title: "",
@@ -37,7 +34,6 @@ export default function CreateTask({ onClose }: CreateTaskProps) {
   const createTaskMutation = useMutation({
     mutationFn: createTask,
     onSuccess: (response) => {
-      console.log("Create task response:", response);
       if (!response.ok) {
         if (response.status === 401) {
           toast.add({
@@ -57,22 +53,17 @@ export default function CreateTask({ onClose }: CreateTaskProps) {
         onClose();
       }
     },
-    onError: (error: any) => {
-      console.error("Error creating task:", error);
-      if (error.response) {
-        if (error.response === 401) {
+    onError: (error: Error) => {
+      if (error.message.includes("401")) {
           toast.add({
             type: "error",
             description: "Unauthorized. Please log in.",
           });
           router.push("/auth/login");
-        }
-        console.error("Error response:", error.response);
       }
       toast.add({
         type: "error",
-        description:
-          error.message || "An error occurred while creating the task.",
+        description: error.message || "An error occurred while creating the task.",
       });
     },
   });

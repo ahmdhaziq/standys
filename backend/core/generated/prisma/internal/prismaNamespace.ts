@@ -399,7 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   user: 'user',
   tasks: 'tasks',
-  daily_tasks: 'daily_tasks'
+  daily_tasks: 'daily_tasks',
+  refresh_sessions: 'refresh_sessions'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tasks" | "daily_tasks"
+    modelProps: "user" | "tasks" | "daily_tasks" | "refresh_sessions"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -641,6 +642,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    refresh_sessions: {
+      payload: Prisma.$refresh_sessionsPayload<ExtArgs>
+      fields: Prisma.refresh_sessionsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.refresh_sessionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.refresh_sessionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>
+        }
+        findFirst: {
+          args: Prisma.refresh_sessionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.refresh_sessionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>
+        }
+        findMany: {
+          args: Prisma.refresh_sessionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>[]
+        }
+        create: {
+          args: Prisma.refresh_sessionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>
+        }
+        createMany: {
+          args: Prisma.refresh_sessionsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.refresh_sessionsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>[]
+        }
+        delete: {
+          args: Prisma.refresh_sessionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>
+        }
+        update: {
+          args: Prisma.refresh_sessionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>
+        }
+        deleteMany: {
+          args: Prisma.refresh_sessionsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.refresh_sessionsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.refresh_sessionsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>[]
+        }
+        upsert: {
+          args: Prisma.refresh_sessionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$refresh_sessionsPayload>
+        }
+        aggregate: {
+          args: Prisma.Refresh_sessionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRefresh_sessions>
+        }
+        groupBy: {
+          args: Prisma.refresh_sessionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Refresh_sessionsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.refresh_sessionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Refresh_sessionsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -716,6 +791,20 @@ export const Daily_tasksScalarFieldEnum = {
 } as const
 
 export type Daily_tasksScalarFieldEnum = (typeof Daily_tasksScalarFieldEnum)[keyof typeof Daily_tasksScalarFieldEnum]
+
+
+export const Refresh_sessionsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  jti: 'jti',
+  token_hash: 'token_hash',
+  expires_at: 'expires_at',
+  revoked_at: 'revoked_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Refresh_sessionsScalarFieldEnum = (typeof Refresh_sessionsScalarFieldEnum)[keyof typeof Refresh_sessionsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -957,6 +1046,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.userOmit
   tasks?: Prisma.tasksOmit
   daily_tasks?: Prisma.daily_tasksOmit
+  refresh_sessions?: Prisma.refresh_sessionsOmit
 }
 
 /* Types for Logging */

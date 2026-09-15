@@ -6,6 +6,7 @@ describe('DailyTasksController', () => {
   let controller: DailyTasksController;
   const dailyTasksService = {
     getDailyTasks: jest.fn(),
+    updateCompletionStatus: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -33,6 +34,27 @@ describe('DailyTasksController', () => {
     expect(dailyTasksService.getDailyTasks).toHaveBeenCalledWith(
       user,
       '2026-09-12',
+    );
+  });
+
+  it('passes update requests and the JWT user to completion-status orchestration', async () => {
+    const user = { id: 7, email: 'user@example.com' };
+    const dto = {
+      dailyTaskId: 3,
+      status: 'COMPLETED' as const,
+      completedAt: '2026-09-15T09:30:00.000Z',
+    };
+    dailyTasksService.updateCompletionStatus.mockResolvedValue({
+      status: 'success',
+      data: {},
+      meta: null,
+    });
+
+    await controller.updateDailyTask(dto, { user } as never);
+
+    expect(dailyTasksService.updateCompletionStatus).toHaveBeenCalledWith(
+      dto,
+      user,
     );
   });
 });

@@ -12,7 +12,10 @@ import { EllipsisVertical, ListClock, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import CreateTask from "./CreateTask";
 import { getTasks } from "../api/get-tasks";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateTask } from "../api/update-task";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 type TaskRow = {
   id: number;
@@ -25,6 +28,8 @@ type TaskRow = {
 
 export default function TaskListCard() {
   const [showInlineCreateTask, setShowInlineCreateTask] = useState(false);
+  const queryClient = useQueryClient();
+  const router = useRouter();
   function getTodayDate() {
     return new Date().toISOString().split("T")[0];
   }
@@ -34,6 +39,33 @@ export default function TaskListCard() {
     queryKey: ["tasks", todayDate],
     queryFn: () => getTasks(todayDate),
   });
+  const updateTaskMutation = useMutation({
+    mutationFn: updateTask,
+    onSuccess: (response) => {
+      if (!response.ok) {
+        toast.add({ type: "error", description: response.error });
+        if (response.status === 401) router.push("/auth/login");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["tasks", todayDate] });
+    },
+    onError: (error: Error) => {
+      toast.add({ type: "error", description: error.message || "Task update failed" });
+    },
+  });
+
+    const sortedTasks = [...(tasks.data?.data ?? [])].sort(
+    (a: TaskRow, b: TaskRow) =>
+      Number(b.status === "COMPLETED") - Number(a.status === "COMPLETED"),
+  );
+
+  function updateCompletionStatus(task: TaskRow, checked: boolean) {
+    updateTaskMutation.mutate({
+      dailyTaskId: task.id,
+      status: checked ? "COMPLETED" : "PENDING",
+      completedAt: checked ? new Date().toISOString() : null,
+    });
+  }
   function onClose() {
     setShowInlineCreateTask(false);
   }
@@ -47,17 +79,19 @@ export default function TaskListCard() {
         </div>
         <div className="mt-2 flex flex-col">
           <ItemGroup className="flex flex-col gap-2">
-            {tasks.data?.data?.map((task: TaskRow) =>
-              task.status === "completed" ? (
-                <Item
-                  key={task.id}
-                  variant="muted"
-                  className="w-full bg-gray-100"
-                >
+            {sortedTasks.map((task: TaskRow) => {
+              const isCompleted = task.status === "COMPLETED";
+              const isUpdating = updateTaskMutation.isPending && updateTaskMutation.variables?.dailyTaskId === task.id;
+              return (
+                <Item key={task.id} variant="muted" className={isCompleted ? "w-full bg-gray-100" : "w-full bg-white"}>
                   <ItemContent>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <Checkbox checked={task.status === "completed"} />
+                        <Checkbox
+                          checked={isCompleted}
+                          disabled={isUpdating}
+                          onCheckedChange={(checked) => updateCompletionStatus(task, checked === true)}
+                        />
                         <div>
                           <ItemTitle className="text-sm font-semibold">
                             {task.task.title}
@@ -76,32 +110,8 @@ export default function TaskListCard() {
                     </div>
                   </ItemContent>
                 </Item>
-              ) : (
-                <Item key={task.id} variant="muted" className="w-full bg-white">
-                  <ItemContent>
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <Checkbox />
-                        <div>
-                          <ItemTitle className="text-sm font-semibold">
-                            {task.task.title}
-                          </ItemTitle>
-                          <ItemDescription className="text-xs font-light">
-                            {task.task.description}
-                          </ItemDescription>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                      >
-                        <EllipsisVertical className="h-6 w-6" />
-                      </button>
-                    </div>
-                  </ItemContent>
-                </Item>
-              ),
-            )}
+              );
+            })}
           </ItemGroup>
 
           {!showInlineCreateTask ? (

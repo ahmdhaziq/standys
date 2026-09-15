@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDailyTaskDto } from './dto/create-daily-task.dto';
+import { UpdateDailyTaskDto } from './dto/update-daily-task.dto';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { Prisma, PrismaClient } from 'generated/prisma/client';
 
@@ -51,6 +52,40 @@ export class DailyTasksRepository {
       include: {
         task: true,
       },
+    });
+  }
+
+  async findDailyTaskForUser(dailyTaskId: number, userId: number) {
+    return this.prisma.daily_tasks.findFirst({
+      where: {
+        id: dailyTaskId,
+        user_id: userId,
+        OR: [{ task_id: null }, { task: { is: { user_id: userId } } }],
+      },
+      include: { task: true },
+    });
+  }
+
+  async updateDailyTasks(dto: UpdateDailyTaskDto, userId: number) {
+    const where = {
+      id: dto.dailyTaskId,
+      user_id: userId,
+      OR: [{ task_id: null }, { task: { is: { user_id: userId } } }],
+    };
+    const result = await this.prisma.daily_tasks.updateMany({
+      where,
+      data: {
+        status: dto.status,
+        completed_at:
+          dto.completedAt === null ? null : new Date(dto.completedAt),
+      },
+    });
+
+    if (result.count === 0) return null;
+
+    return this.prisma.daily_tasks.findFirst({
+      where,
+      include: { task: true },
     });
   }
 }

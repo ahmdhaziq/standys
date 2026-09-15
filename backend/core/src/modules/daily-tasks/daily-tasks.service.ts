@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { NewDailyTaskDto } from './dto/new-daily-task.dto';
 import { TasksService } from '../tasks/tasks.service';
 import { DailyTasksRepository } from './daily-tasks.repository';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { ValidateUser } from '../auth/types/validate';
+import { UpdateDailyTaskDto } from './dto/update-daily-task.dto';
 
 interface DailyTaskRecord {
   task_id: number | null;
@@ -90,5 +95,53 @@ export class DailyTasksService {
       data: dailyTasks,
       meta: null,
     };
+  }
+
+  async updateDailyTasks(dto: UpdateDailyTaskDto, user: ValidateUser) {
+    const dailyTask = await this.dailyTasksRepository.updateDailyTasks(
+      dto,
+      user.id,
+    );
+    if (!dailyTask) throw new UnauthorizedException();
+
+    return {
+      status: 'success',
+      data: {
+        id: dailyTask.id,
+        status: dailyTask.status,
+        completedAt: dailyTask.completed_at,
+      },
+      meta: null,
+    };
+  }
+
+  async updateCompletionStatus(dto: UpdateDailyTaskDto, user: ValidateUser) {
+    const dailyTask = await this.dailyTasksRepository.findDailyTaskForUser(
+      dto.dailyTaskId,
+      user.id,
+    );
+    if (!dailyTask) throw new UnauthorizedException();
+
+    if (dailyTask.status === dto.status) {
+      throw new BadRequestException(
+        'Daily task already has the requested status',
+      );
+    }
+
+    const completesPendingTask =
+      dailyTask.status === 'PENDING' &&
+      dto.status === 'COMPLETED' &&
+      typeof dto.completedAt === 'string' &&
+      !Number.isNaN(Date.parse(dto.completedAt));
+    const restoresCompletedTask =
+      dailyTask.status === 'COMPLETED' &&
+      dto.status === 'PENDING' &&
+      dto.completedAt === null;
+
+    if (!completesPendingTask && !restoresCompletedTask) {
+      throw new BadRequestException('Unsupported daily task status transition');
+    }
+
+    return this.updateDailyTasks(dto, user);
   }
 }

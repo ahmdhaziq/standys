@@ -1,16 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  UnauthorizedException,
+  ValidationPipe,
+} from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { DailyTasksService } from './../src/modules/daily-tasks/daily-tasks.service';
+import { JwtAuthGuard } from './../src/modules/auth/guards/jwt-auth.guard';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
+  const dailyTasksService = {
+    updateCompletionStatus: jest.fn(),
+  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(DailyTasksService)
+      .useValue(dailyTasksService)
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: (context: {
+          switchToHttp: () => { getRequest: () => { user?: unknown } };
+        }) => {
+          context.switchToHttp().getRequest().user = {
+            id: 7,
+            email: 'user@example.com',
+          };
+          return true;
+        },
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(
@@ -46,6 +70,76 @@ describe('AppController (e2e)', () => {
         const responseBody = body as { message: string };
         expect(responseBody.message).toBe('Invalid refresh token');
       });
+  });
+
+  it('accepts a guarded completion-status update and validates its DTO', async () => {
+    dailyTasksService.updateCompletionStatus.mockResolvedValue({
+      status: 'success',
+      data: {
+        id: 3,
+        status: 'COMPLETED',
+        completedAt: '2026-09-15T09:30:00.000Z',
+      },
+      meta: null,
+    });
+
+    await request(app.getHttpServer())
+      .post('/daily-tasks/update')
+      .send({
+        dailyTaskId: 3,
+        status: 'COMPLETED',
+        completedAt: '2026-09-15T09:30:00.000Z',
+      })
+      .expect(201);
+
+    expect(dailyTasksService.updateCompletionStatus).toHaveBeenCalledWith(
+      {
+        dailyTaskId: 3,
+        status: 'COMPLETED',
+        completedAt: '2026-09-15T09:30:00.000Z',
+      },
+      { id: 7, email: 'user@example.com' },
+    );
+
+    await request(app.getHttpServer())
+      .post('/daily-tasks/update')
+      .send({
+        dailyTaskId: 3,
+        status: 'COMPLETED',
+        completedAt: '2026-09-15T09:30:00.000Z',
+        userId: 8,
+      })
+      .expect(400);
+
+    dailyTasksService.updateCompletionStatus.mockRejectedValueOnce(
+      new UnauthorizedException(),
+    );
+    await request(app.getHttpServer())
+      .post('/daily-tasks/update')
+      .send({
+        dailyTaskId: 8,
+        status: 'COMPLETED',
+        completedAt: '2026-09-15T09:30:00.000Z',
+      })
+      .expect(401);
+  });
+
+  it('accepts a guarded restoration payload', async () => {
+    dailyTasksService.updateCompletionStatus.mockResolvedValue({
+      status: 'success',
+      data: { id: 3, status: 'PENDING', completedAt: null },
+      meta: null,
+    });
+
+    await request(app.getHttpServer())
+      .post('/daily-tasks/update')
+      .send({ dailyTaskId: 3, status: 'PENDING', completedAt: null })
+      .expect(201);
+
+    expect(dailyTasksService.updateCompletionStatus).toHaveBeenCalledWith(
+      { dailyTaskId: 3, status: 'PENDING', completedAt: null },
+      { id: 7, email: 'user@example.com' },
+    );
   });
 
   afterEach(async () => {

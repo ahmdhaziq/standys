@@ -11,6 +11,7 @@ import type { Request as ExpressRequest } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DailyTasksQueryDto } from './dto/daily-tasks-query.dto';
 import { NewDailyTaskDto } from './dto/new-daily-task.dto';
+import { UpdateDailyTaskDto } from './dto/update-daily-task.dto';
 import { ValidateUser } from '../auth/types/validate';
 import { DailyTasksService } from './daily-tasks.service';
 
@@ -37,5 +38,14 @@ export class DailyTasksController {
     @Query() query: DailyTasksQueryDto,
   ) {
     return this.dailyTasksService.getDailyTasks(req.user, query.taskDate);
+  }
+
+  @Post('update')
+  @UseGuards(JwtAuthGuard)
+  async updateDailyTask(
+    @Body() dto: UpdateDailyTaskDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.dailyTasksService.updateCompletionStatus(dto, req.user);
   }
 }

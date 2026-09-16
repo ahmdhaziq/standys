@@ -14,6 +14,8 @@ describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
   const dailyTasksService = {
     updateCompletionStatus: jest.fn(),
+    getIncompleteDailyTasks: jest.fn(),
+    carryForwardDailyTask: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -139,6 +141,25 @@ describe('AppController (e2e)', () => {
     expect(dailyTasksService.updateCompletionStatus).toHaveBeenCalledWith(
       { dailyTaskId: 3, status: 'PENDING', completedAt: null },
       { id: 7, email: 'user@example.com' },
+    );
+  });
+
+  it('accepts an overdue query and carry-forward command', async () => {
+    dailyTasksService.getIncompleteDailyTasks.mockResolvedValue({ status: 'success', data: [], meta: null });
+    await request(app.getHttpServer())
+      .get('/daily-tasks/incomplete?taskDate=2026-09-16')
+      .expect(200);
+    expect(dailyTasksService.getIncompleteDailyTasks).toHaveBeenCalledWith(
+      { id: 7, email: 'user@example.com' }, '2026-09-16',
+    );
+
+    dailyTasksService.carryForwardDailyTask.mockResolvedValue({ status: 'success', data: { id: 3 }, meta: null });
+    await request(app.getHttpServer())
+      .post('/daily-tasks/carry-forward')
+      .send({ dailyTaskId: 3, taskDate: '2026-09-16' })
+      .expect(201);
+    expect(dailyTasksService.carryForwardDailyTask).toHaveBeenCalledWith(
+      { dailyTaskId: 3, taskDate: '2026-09-16' }, { id: 7, email: 'user@example.com' },
     );
   });
 

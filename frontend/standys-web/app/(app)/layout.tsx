@@ -6,14 +6,14 @@ export default function AppLayout({
   children: React.ReactNode;
 }){
   return (
-    <div className="min-h-full flex">
-      <div>
+    <div className="flex min-h-screen items-stretch">
+      <aside className="flex self-stretch">
         {/* sidebar */}
         <Sidebar />
-      </div>
-      <div className="flex-1">
+      </aside>
+      <main className="min-w-0 flex-1">
         {children}
-      </div>
+      </main>
     </div>
   )
 }

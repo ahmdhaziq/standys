@@ -1,6 +1,18 @@
 import { DailyTasksRepository } from './daily-tasks.repository';
 
 describe('DailyTasksRepository', () => {
+  it('returns only pending historical rows in newest-first order', async () => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const repository = new DailyTasksRepository({ daily_tasks: { findMany } } as never);
+
+    await repository.getIncompleteDailyTasks(7, '2026-09-16');
+
+    expect(findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({ user_id: 7, status: 'PENDING', task_date: { lt: new Date('2026-09-16T00:00:00.000Z') } }),
+      orderBy: { task_date: 'desc' },
+    }));
+  });
+
   it('scopes results to the user and excludes the next day boundary', async () => {
     const findMany = jest.fn().mockResolvedValue([]);
     const repository = new DailyTasksRepository({

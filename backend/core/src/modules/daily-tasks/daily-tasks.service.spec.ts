@@ -9,6 +9,7 @@ describe('DailyTasksService', () => {
   let service: DailyTasksService;
   const dailyTasksRepository = {
     getDailyTasks: jest.fn(),
+    getIncompleteDailyTasks: jest.fn(),
     findDailyTaskForUser: jest.fn(),
     updateDailyTasks: jest.fn(),
   };
@@ -147,6 +148,25 @@ describe('DailyTasksService', () => {
     expect(dailyTasksRepository.getDailyTasks).toHaveBeenCalledWith(
       7,
       '2026-09-12',
+    );
+  });
+
+  it('returns pending historical tasks for the authenticated user', async () => {
+    const rows = [{ id: 4, status: 'PENDING' }];
+    dailyTasksRepository.getIncompleteDailyTasks.mockResolvedValue(rows);
+    await expect(service.getIncompleteDailyTasks({ id: 7, email: 'user@example.com' }, '2026-09-16')).resolves.toEqual({ status: 'success', data: rows, meta: null });
+    expect(dailyTasksRepository.getIncompleteDailyTasks).toHaveBeenCalledWith(7, '2026-09-16');
+  });
+
+  it('carries an owned pending overdue task forward through updateDailyTasks', async () => {
+    const user = { id: 7, email: 'user@example.com' };
+    dailyTasksRepository.findDailyTaskForUser.mockResolvedValue({ id: 3, status: 'PENDING', task_date: new Date('2026-09-15T00:00:00.000Z') });
+    dailyTasksRepository.updateDailyTasks.mockResolvedValue({ id: 3, status: 'PENDING', task_date: new Date('2026-09-16T00:00:00.000Z') });
+    await expect(service.carryForwardDailyTask({ dailyTaskId: 3, taskDate: '2026-09-16' }, user)).resolves.toMatchObject({ data: { id: 3, status: 'PENDING' } });
+    expect(dailyTasksRepository.updateDailyTasks).toHaveBeenCalledWith(
+      { dailyTaskId: 3, status: 'PENDING', completedAt: null },
+      7,
+      expect.objectContaining({ expectedStatus: 'PENDING', beforeTaskDate: new Date('2026-09-16T00:00:00.000Z'), taskDate: new Date('2026-09-16T00:00:00.000Z') }),
     );
   });
 });

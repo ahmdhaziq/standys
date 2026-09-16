@@ -6,7 +6,9 @@ describe('DailyTasksController', () => {
   let controller: DailyTasksController;
   const dailyTasksService = {
     getDailyTasks: jest.fn(),
+    getIncompleteDailyTasks: jest.fn(),
     updateCompletionStatus: jest.fn(),
+    carryForwardDailyTask: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -56,5 +58,15 @@ describe('DailyTasksController', () => {
       dto,
       user,
     );
+  });
+
+  it('passes overdue queries and carry-forward requests with the JWT user', async () => {
+    const user = { id: 7, email: 'user@example.com' };
+    dailyTasksService.getIncompleteDailyTasks.mockResolvedValue({ status: 'success', data: [], meta: null });
+    dailyTasksService.carryForwardDailyTask.mockResolvedValue({ status: 'success', data: {}, meta: null });
+    await controller.getIncompleteDailyTasks({ user } as never, { taskDate: '2026-09-16' });
+    await controller.carryForwardDailyTask({ dailyTaskId: 3, taskDate: '2026-09-16' }, { user } as never);
+    expect(dailyTasksService.getIncompleteDailyTasks).toHaveBeenCalledWith(user, '2026-09-16');
+    expect(dailyTasksService.carryForwardDailyTask).toHaveBeenCalledWith({ dailyTaskId: 3, taskDate: '2026-09-16' }, user);
   });
 });

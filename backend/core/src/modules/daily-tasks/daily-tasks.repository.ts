@@ -55,6 +55,20 @@ export class DailyTasksRepository {
     });
   }
 
+  async getIncompleteDailyTasks(userId: number, taskDate: string) {
+    const before = new Date(`${taskDate}T00:00:00.000Z`);
+    return await this.prisma.daily_tasks.findMany({
+      where: {
+        user_id: userId,
+        status: 'PENDING',
+        task_date: { lt: before },
+        OR: [{ task_id: null }, { task: { is: { user_id: userId } } }],
+      },
+      include: { task: true },
+      orderBy: { task_date: 'desc' },
+    });
+  }
+
   async findDailyTaskForUser(dailyTaskId: number, userId: number) {
     return this.prisma.daily_tasks.findFirst({
       where: {
@@ -66,19 +80,37 @@ export class DailyTasksRepository {
     });
   }
 
-  async updateDailyTasks(dto: UpdateDailyTaskDto, userId: number) {
+  async updateDailyTasks(
+    dto: UpdateDailyTaskDto,
+    userId: number,
+    options: {
+      expectedStatus?: string;
+      beforeTaskDate?: Date;
+      taskDate?: Date;
+    } = {},
+  ) {
     const where = {
       id: dto.dailyTaskId,
       user_id: userId,
       OR: [{ task_id: null }, { task: { is: { user_id: userId } } }],
+      ...(options.expectedStatus ? { status: options.expectedStatus } : {}),
+      ...(options.beforeTaskDate
+        ? { task_date: { lt: options.beforeTaskDate } }
+        : {}),
+    };
+    const data = {
+      ...(dto.status !== undefined ? { status: dto.status } : {}),
+      ...(dto.completedAt !== undefined
+        ? {
+            completed_at:
+              dto.completedAt === null ? null : new Date(dto.completedAt),
+          }
+        : {}),
+      ...(options.taskDate ? { task_date: options.taskDate } : {}),
     };
     const result = await this.prisma.daily_tasks.updateMany({
       where,
-      data: {
-        status: dto.status,
-        completed_at:
-          dto.completedAt === null ? null : new Date(dto.completedAt),
-      },
+      data,
     });
 
     if (result.count === 0) return null;

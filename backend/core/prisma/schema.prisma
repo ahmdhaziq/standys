@@ -49,6 +49,7 @@ model daily_tasks {
   updated_at   DateTime  @updatedAt
 
   @@unique([task_date, task_id])
+  @@index([user_id, status, task_date])
 }
 
 model refresh_sessions {

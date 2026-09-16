@@ -14,6 +14,8 @@ import { NewDailyTaskDto } from './dto/new-daily-task.dto';
 import { UpdateDailyTaskDto } from './dto/update-daily-task.dto';
 import { ValidateUser } from '../auth/types/validate';
 import { DailyTasksService } from './daily-tasks.service';
+import { IncompleteDailyTasksQueryDto } from './dto/incomplete-daily-tasks-query.dto';
+import { CarryForwardDailyTaskDto } from './dto/carry-forward-daily-task.dto';
 
 interface AuthenticatedRequest extends ExpressRequest {
   user: ValidateUser;
@@ -40,6 +42,15 @@ export class DailyTasksController {
     return this.dailyTasksService.getDailyTasks(req.user, query.taskDate);
   }
 
+  @Get('incomplete')
+  @UseGuards(JwtAuthGuard)
+  async getIncompleteDailyTasks(
+    @Req() req: AuthenticatedRequest,
+    @Query() query: IncompleteDailyTasksQueryDto,
+  ) {
+    return this.dailyTasksService.getIncompleteDailyTasks(req.user, query.taskDate);
+  }
+
   @Post('update')
   @UseGuards(JwtAuthGuard)
   async updateDailyTask(
@@ -47,5 +58,14 @@ export class DailyTasksController {
     @Req() req: AuthenticatedRequest,
   ) {
     return this.dailyTasksService.updateCompletionStatus(dto, req.user);
+  }
+
+  @Post('carry-forward')
+  @UseGuards(JwtAuthGuard)
+  async carryForwardDailyTask(
+    @Body() dto: CarryForwardDailyTaskDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.dailyTasksService.carryForwardDailyTask(dto, req.user);
   }
 }
